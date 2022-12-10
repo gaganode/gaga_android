@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:background="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+    <Button
+        android:id="@+id/UpgradeButton"
+        android:textColor="@color/white"
+        app:backgroundTint="#5D5D5D"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="1dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        android:text="Upgrade to new version "
+        />
+
+    <Button
+        android:id="@+id/CheckRewardButton"
+        android:layout_above="@id/UpgradeButton"
+        android:textColor="@color/white"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="1dp"
+        android:text="Check My Reward "
+        app:backgroundTint="#6200ED" />
+
+
+    <LinearLayout
+        android:id="@+id/SettingLayout"
+        android:layout_above="@id/CheckRewardButton"
+        android:layout_margin="5dp"
+        android:layout_marginBottom="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:textColor="@color/white"
+            android:id="@+id/GetTokenButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="50"
+            android:text="No token yet?"
+            app:backgroundTint="#5D5D5D" />
+
+        <Button
+            android:textColor="@color/white"
+            android:id="@+id/StartMiningButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:text="Start Mining"
+            app:backgroundTint="#6200ED" />
+
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/TokenInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/SettingLayout"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:ems="10"
+        android:hint="Input Your Token"
+        android:textColorHint="#D3D3D3"
+        android:textColor="@color/black"
+        android:backgroundTint="#D3D3D3"
+        android:inputType="textShortMessage|textPersonName|text" />
+
+    <TextView
+        android:id="@+id/logtext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/TokenInput"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:text=""
+        android:textColor="#808080"
+        android:gravity="bottom"
+        />
+
+
+
+</RelativeLayout>
