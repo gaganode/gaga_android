@@ -212,15 +212,15 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
         MinerService.StartService(this.getApplicationContext());
 
         //for debug
-        new Thread() { public void run() {
-                while(true){
-                         Log("current client number: "+MinerSdk.getLiveClientsNum());
-                         try{
-                             Thread.sleep(5000);
-                         }catch (Exception e){
-
-                         }}
-         }}.start();
+        //        new Thread() { public void run() {
+        //                while(true){
+        //                         Log("current client number: "+MinerSdk.getLiveClientsNum());
+        //                         try{
+        //                             Thread.sleep(5000);
+        //                         }catch (Exception e){
+        //
+        //                         }}
+        //         }}.start();
     }
 
 
