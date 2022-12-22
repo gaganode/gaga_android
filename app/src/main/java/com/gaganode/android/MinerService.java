@@ -135,6 +135,22 @@ public class MinerService extends Service {
         return false;
     }
 
+
+    //disable battery kill
+    public static void  DisableBatteryKill(Activity activity){
+        try{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                Intent intent = new Intent();
+                String packageName = activity.getPackageName();
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+                activity.startActivity(intent);
+            }
+        }catch (Exception e){
+            //nothing to do
+        }
+    }
+
 }
 
 

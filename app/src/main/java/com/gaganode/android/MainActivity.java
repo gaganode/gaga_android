@@ -17,20 +17,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gaganode.sdk.MinerSdk;
-import com.gaganode.sdk.http_util.HttpResponse;
-import com.gaganode.sdk.http_util.Util;
-import com.gaganode.sdk.json.simple.JSONObject;
-import com.gaganode.sdk.json.simple.JSONValue;
-
-import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallback {
+public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallback,MinerSdk.UpdateCallback {
 
-    String upgrade_url="";
+    String upgrade_download_url="";
     public final int version_check_interval_secs=3600*8*1000; //8 hours
 
     TextView logText;
@@ -58,74 +52,6 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
         });
     }
 
-
-    private void checkVersion (){
-        new Thread() { public void run() {
-            while(true){
-
-                try{
-                    Thread.sleep(3000); //3 secs
-                }catch (Exception e){}
-
-                try{
-                    RemoteVersion remoteV = getRemoteVersion();
-                    upgrade_url=remoteV.download_url;
-
-                    Log("remote version: "+remoteV.version);
-                    Log("current version:"+MinerSdk.getVersion());
-
-                    if (!MinerSdk.getVersion().equals(remoteV.version)){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                upgradeButton.setVisibility(View.VISIBLE);
-                            }
-                        });
-                    }
-                }catch (Exception e) {
-                    Log("checkVersion" + e);
-                }finally {
-                    try{
-                        Thread.sleep(version_check_interval_secs);
-                    }catch (Exception e){}
-                }
-            }
-         }}.start();
-    }
-
-    class RemoteVersion {
-        public String version;
-        public String download_url ;
-    }
-
-    private RemoteVersion getRemoteVersion() throws Exception{
-
-        RemoteVersion result=new RemoteVersion();
-
-        String package_api_url ="https://api.package.coreservice.io:10443/api/version/32";
-
-        HttpResponse http_resp = Util.HttpGet(package_api_url);
-        if (http_resp.response_code!= HttpURLConnection.HTTP_OK){
-            throw new Exception("http_resp.response_code error :"+http_resp.response_code);
-        }
-
-        JSONObject jsonObj = (JSONObject) JSONValue.parseWithException(http_resp.response_string);
-        long meta_status = (long) jsonObj.get("meta_status");
-        String meta_msg = (String) jsonObj.get("meta_message");
-        if (meta_status!=1){
-            throw new Exception("meta_status error: status:"+meta_status+ " msg:"+meta_msg);
-        }
-
-        String version = (String) jsonObj.get("version");
-
-        String content = (String) jsonObj.get("content");
-        JSONObject contentObj = (JSONObject) JSONValue.parseWithException(content);
-
-        result.version=version;
-        result.download_url=(String) contentObj.get("download_url");
-
-        return result;
-    }
 
 
     @Override
@@ -159,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
         this.upgradeButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(upgrade_url));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(upgrade_download_url));
                 startActivity(browserIntent);
             }
         });
@@ -169,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
             @Override
             public void onClick(View v) {
                 try{
+                    /////////
+                    MinerService.DisableBatteryKill(MainActivity.this);
+
                     Log("will restart within 60 secs");
                     String token = tokenInput.getText().toString();
                     ////using sdk
@@ -202,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
 
         //
         MinerSdk.SetLogCallback(this);
-        checkVersion();
+        MinerSdk.SetUpdateCallback(this);
 
         //
         MinerService.StartService(this.getApplicationContext());
@@ -296,6 +225,25 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
             showActivity("com.smartisanos.security");
         }
     }
+
+
+
+    @Override
+    public void UpdateCallback(String remote_version,String download_url) {
+        Log("remote version:"+remote_version);
+        Log("local version:"+MinerSdk.getVersion());
+        Log("should update");
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.this.upgrade_download_url=download_url;
+                upgradeButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+    }
+
 
 
 }
