@@ -183,10 +183,6 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
             }
         });
 
-
-        /////////
-        MinerService.DisableBatteryKill(this);
-
         //
         try {
 

@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission-sdk-23 android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
 
     <application
@@ -26,8 +26,12 @@
         <service  android:name="com.gaganode.android.MinerService" android:exported="true" >
         </service>
 
-        <receiver android:name=".RestartServiceReceiver"  android:stopWithTask="false"  android:exported="true">
+        <receiver android:name=".RestartServiceReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:stopWithTask="false"  android:exported="true">
             <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="keep_service" />
             </intent-filter>
         </receiver>
