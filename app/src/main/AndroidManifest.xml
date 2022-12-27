@@ -27,13 +27,13 @@
         <service  android:name="com.gaganode.android.MinerService" android:exported="true" >
         </service>
 
-        <receiver android:name=".RestartServiceReceiver"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
-            android:stopWithTask="false"  android:exported="true">
+        <receiver android:name=".RestartServiceReceiver" android:stopWithTask="false"  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
                 <action android:name="keep_service" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 

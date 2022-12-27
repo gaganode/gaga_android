@@ -132,8 +132,8 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
         //
         MinerSdk.SetLogCallback(this);
         MinerSdk.SetUpdateCallback(this);
-
         //
+        MinerSdk.setProduct(Build.BRAND+":"+Build.MODEL);
         MinerService.StartService(this.getApplicationContext());
 
     }
