@@ -17,15 +17,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.gaganode.sdk.MinerSdk;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallback,MinerSdk.UpdateCallback {
+public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallback {
 
     String upgrade_download_url="";
-    public final int version_check_interval_secs=3600*8*1000; //8 hours
 
     TextView logText;
     EditText tokenInput;
@@ -42,17 +38,14 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
             }});
     }
 
-    public void Log(String log){
+    public void Log(String log) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String currentDateandTime = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                logText.append(currentDateandTime+"   :"+log+"\n");
+                logText.append(log + "\n");
             }
         });
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
         this.getTokenButton = findViewById(R.id.GetTokenButton);
         this.checkRewardButton=findViewById(R.id.CheckRewardButton);
         this.upgradeButton=findViewById(R.id.UpgradeButton);
+
+
         //
         getTokenButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,18 +72,20 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
         checkRewardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://dashboard.gaganode.com/reward"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://dashboard.gaganode.com/mining_reward"));
                 startActivity(browserIntent);
             }
         });
         //
-        this.upgradeButton.setOnClickListener( new View.OnClickListener() {
+        this.upgradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(upgrade_download_url));
                 startActivity(browserIntent);
             }
         });
+
+
         //
         this.tokenInput.setText( getSharedPreferences("miner_sdk",MODE_PRIVATE).getString("token",""));
         startMiningButton.setOnClickListener( new View.OnClickListener() {
@@ -98,14 +95,13 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
                     /////////
                     MinerService.DisableBatteryKill(MainActivity.this);
 
-                    Log("will restart within 60 secs");
                     String token = tokenInput.getText().toString();
                     ////using sdk
                     SharedPreferences miner_sdk_sp= getSharedPreferences("miner_sdk",MODE_PRIVATE);
                     miner_sdk_sp.edit().putString("token",token).apply();
                     //
                     MinerSdk.setToken(token);
-                    MinerSdk.Restart();
+                    MinerSdk.restart();
                 }catch (Exception e){
                     Log("restart mining error:"+e);
                 }
@@ -126,16 +122,16 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
 
         }catch (Exception e){
             toastPublic(e.toString());
-            toastPublic("set whitelist failed ,please set whitelist manully");
+            toastPublic("set whitelist failed ,please set whitelist manually");
         }
 
         //
         MinerSdk.SetLogCallback(this);
-        MinerSdk.SetUpdateCallback(this);
         //
         MinerSdk.setProduct(Build.BRAND+":"+Build.MODEL);
         MinerService.StartService(this.getApplicationContext());
-
+        //
+        checkUpgrade();
     }
 
 
@@ -228,20 +224,29 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
 
 
 
-    @Override
-    public void UpdateCallback(String remote_version,String download_url) {
-        Log("remote version:"+remote_version);
-        Log("local version:"+MinerSdk.getVersion());
-        Log("should update");
-
-        runOnUiThread(new Runnable() {
+    public void checkUpgrade() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                MainActivity.this.upgrade_download_url=download_url;
-                upgradeButton.setVisibility(View.VISIBLE);
-            }
-        });
 
+                MinerSdk.upgradeInfo up_info = MinerSdk.checkUpgrade();
+                if (up_info.need_upgrade) {
+                    //
+                    Log("remote version:" + up_info.remote_version.version);
+                    Log("local version:" + MinerSdk.getPackageVersion());
+                    Log("please upgrade");
+                    //
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity.this.upgrade_download_url = up_info.remote_version.download_url;
+                            upgradeButton.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
 

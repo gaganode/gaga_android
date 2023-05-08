@@ -68,8 +68,8 @@ public class MinerService extends Service {
         String miner_sdk_token=miner_sdk_sp.getString("token","");
         miner_sdk_sp.edit().putLong("node_id",node_id).apply();
         //
-        MinerSdk.Init(miner_sdk_token,node_id);
-        MinerSdk.Start();
+        MinerSdk.init(node_id,miner_sdk_token);
+        MinerSdk.start();
 
         //keep alive set alarm pending task
         AlarmManager alarms = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
