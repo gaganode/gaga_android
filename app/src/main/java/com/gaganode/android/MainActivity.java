@@ -16,10 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.gaganode.sdk.LogCallback;
 import com.gaganode.sdk.MinerSdk;
+import com.gaganode.sdk.UpgradeInfo;
 
 
-public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallback {
+public class MainActivity extends AppCompatActivity implements LogCallback {
 
     String upgrade_download_url="";
 
@@ -229,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements MinerSdk.LogCallb
             @Override
             public void run() {
 
-                MinerSdk.upgradeInfo up_info = MinerSdk.checkUpgrade();
+                UpgradeInfo up_info = MinerSdk.checkUpgrade();
                 if (up_info.need_upgrade) {
                     //
                     Log("remote version:" + up_info.remote_version.version);
