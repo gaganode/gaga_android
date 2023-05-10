@@ -21,6 +21,10 @@ import com.gaganode.sdk.LogCallback;
 import com.gaganode.sdk.MinerSdk;
 import com.gaganode.sdk.UpgradeInfo;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class MainActivity extends AppCompatActivity implements LogCallback {
 
@@ -45,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements LogCallback {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                logText.append(log + "\n");
+                String currentDateandTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                logText.append("["+currentDateandTime+"] :"+log+"\n");
             }
         });
     }
