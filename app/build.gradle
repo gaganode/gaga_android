@@ -10,8 +10,8 @@ android {
         applicationId "com.gaganode.android"
         minSdk 16
         targetSdk 32
-        versionCode 66
-        versionName "0.0.66"
+        versionCode 88
+        versionName "0.0.88"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
